@@ -1,10 +1,12 @@
 using System;
+using TreeEditor;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
     [SerializeField] private float _stoppingDistance = 0.5f;
     [SerializeField] private float _moveSpeed = 4f;
+    [SerializeField] private float _rotateSpeed = 10f;
 
     private Vector3 _targetPosition;
 
@@ -22,6 +24,9 @@ public class Unit : MonoBehaviour
         {
             Vector3 moveDirection = (_targetPosition - transform.position).normalized;
             transform.position += moveDirection * (Time.deltaTime * _moveSpeed);
+            
+            // transform.forward = moveDirection; without interpolation
+            transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * _rotateSpeed);
             
             _unitAnimator.SetBool(IsWalking, true);
         }
