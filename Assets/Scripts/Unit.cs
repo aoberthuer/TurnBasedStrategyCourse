@@ -1,5 +1,3 @@
-using System;
-using TreeEditor;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
@@ -16,6 +14,8 @@ public class Unit : MonoBehaviour
     private void Awake()
     {
         _unitAnimator = GetComponentInChildren<Animator>();
+
+        _targetPosition = transform.position;
     }
 
     private void Update()
@@ -33,11 +33,6 @@ public class Unit : MonoBehaviour
         else
         {
             _unitAnimator.SetBool(IsWalking, false);
-        }
-        
-        if (Input.GetMouseButtonDown(0))
-        {
-            Move(MouseWorld.GetPosition());
         }
     }
 
