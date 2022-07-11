@@ -1,10 +1,28 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class UnitActionSystem : MonoBehaviour
 {
+    public static UnitActionSystem Instance { get; private set; }
+    
     [SerializeField] private Unit _selectedUnit;
+    public Unit SelectedUnit => _selectedUnit;
 
     [SerializeField] private LayerMask _unitLayerMask;
+
+    public event Action<Unit> OnSelectedUnitChanged;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Debug.LogError("There is more than one instance: " + transform);
+            Destroy(gameObject);
+            return;
+        }
+        
+        Instance = this;
+    }
 
     private void Update()
     {
@@ -27,6 +45,7 @@ public class UnitActionSystem : MonoBehaviour
             if (raycastHit.collider.TryGetComponent<Unit>(out Unit unit))
             {
                 _selectedUnit = unit;
+                OnSelectedUnitChanged?.Invoke(_selectedUnit);
                 return true;
             }
         }
