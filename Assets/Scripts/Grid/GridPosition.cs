@@ -1,4 +1,4 @@
-﻿namespace DefaultNamespace
+﻿namespace grid
 {
     public readonly struct GridPosition
     {

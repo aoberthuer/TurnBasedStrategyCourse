@@ -1,4 +1,4 @@
-﻿using System;
+﻿using grid;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -7,9 +7,12 @@ namespace DefaultNamespace
     {
         private GridSystem _gridSystem;
 
+        [SerializeField] private Transform gridDebugObjectTransform;
+        
         private void Start()
         {
             _gridSystem = new GridSystem(10, 10, 2f);
+            _gridSystem.CreateDebugObjects(gridDebugObjectTransform);
         }
 
         private void Update()

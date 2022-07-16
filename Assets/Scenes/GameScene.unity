@@ -861,6 +861,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca48d05141274eb5bc51abbfba1a1e8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridDebugObjectTransform: {fileID: 7348279800187958691, guid: 481f198dedff50c46ab622dd0b6e4cde,
+    type: 3}
 --- !u!1 &2133020914
 GameObject:
   m_ObjectHideFlags: 0
