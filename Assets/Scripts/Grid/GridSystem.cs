@@ -40,7 +40,7 @@ namespace grid
             );
         }
 
-        private GridObject GetGridObject(GridPosition gridPosition)
+        public GridObject GetGridObject(GridPosition gridPosition)
         {
             return _gridObjects[gridPosition.x, gridPosition.z];
         }
