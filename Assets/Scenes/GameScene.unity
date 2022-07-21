@@ -815,6 +815,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 5
+  _rotationSpeed: 25
+  cinemachineVirtualCamera: {fileID: 539790949}
 --- !u!1 &1073309003
 GameObject:
   m_ObjectHideFlags: 0
