@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace grid
+namespace tbs.grid
 {
     public class GridDebugObject : MonoBehaviour
     {

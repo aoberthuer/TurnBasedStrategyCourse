@@ -1,5 +1,4 @@
-﻿using grid;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DefaultNamespace
 {

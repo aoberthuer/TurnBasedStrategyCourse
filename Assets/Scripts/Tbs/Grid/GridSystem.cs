@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace grid
+namespace tbs.grid
 {
     public class GridSystem
     {

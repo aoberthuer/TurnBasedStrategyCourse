@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using tbs.units;
 
-namespace grid
+namespace tbs.grid
 {
     public class GridObject
     {

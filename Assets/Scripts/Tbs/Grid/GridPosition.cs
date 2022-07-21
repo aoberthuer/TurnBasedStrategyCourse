@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace grid
+namespace tbs.grid
 {
     public struct GridPosition : IEquatable<GridPosition>
     {

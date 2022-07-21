@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using tbs.units;
 using UnityEngine;
 
-namespace grid
+namespace tbs.grid
 {
     public class LevelGrid : MonoBehaviour
     {
