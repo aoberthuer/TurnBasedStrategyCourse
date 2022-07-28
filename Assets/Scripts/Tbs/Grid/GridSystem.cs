@@ -44,6 +44,16 @@ namespace tbs.grid
         {
             return _gridObjects[gridPosition.x, gridPosition.z];
         }
+        
+        public bool IsValidGridPosition(GridPosition gridPosition)
+        {
+            return  gridPosition.x >= 0 && 
+                    gridPosition.z >= 0 && 
+                    gridPosition.x < _width && 
+                    gridPosition.z < _height;
+        }
+
+
 
         public void CreateDebugObjects(Transform debugPrefab)
         {

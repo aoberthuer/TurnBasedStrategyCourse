@@ -40,6 +40,17 @@ namespace tbs.grid
             return !(a == b);
         }
         
+        public static GridPosition operator +(GridPosition a, GridPosition b)
+        {
+            return new GridPosition(a.x + b.x, a.z + b.z);
+        }
+
+        public static GridPosition operator -(GridPosition a, GridPosition b)
+        {
+            return new GridPosition(a.x - b.x, a.z - b.z);
+        }
+
+        
         public override string ToString()
         {
             return $"x: { x }; z: { z }";

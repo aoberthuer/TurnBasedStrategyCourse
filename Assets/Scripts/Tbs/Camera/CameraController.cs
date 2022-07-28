@@ -13,8 +13,8 @@ namespace tbs.camera
 
         [SerializeField] private CinemachineVirtualCamera cinemachineVirtualCamera;
 
-        private CinemachineTransposer cinemachineTransposer;
-        private Vector3 targetFollowOffset;
+        private CinemachineTransposer _cinemachineTransposer;
+        private Vector3 _targetFollowOffset;
 
 
         private void Update()
@@ -26,8 +26,8 @@ namespace tbs.camera
 
         private void Start()
         {
-            cinemachineTransposer = cinemachineVirtualCamera.GetCinemachineComponent<CinemachineTransposer>();
-            targetFollowOffset = cinemachineTransposer.m_FollowOffset;
+            _cinemachineTransposer = cinemachineVirtualCamera.GetCinemachineComponent<CinemachineTransposer>();
+            _targetFollowOffset = _cinemachineTransposer.m_FollowOffset;
         }
 
 
@@ -80,19 +80,19 @@ namespace tbs.camera
             float zoomAmount = 1f;
             if (Input.mouseScrollDelta.y > 0)
             {
-                targetFollowOffset.y -= zoomAmount;
+                _targetFollowOffset.y -= zoomAmount;
             }
 
             if (Input.mouseScrollDelta.y < 0)
             {
-                targetFollowOffset.y += zoomAmount;
+                _targetFollowOffset.y += zoomAmount;
             }
 
-            targetFollowOffset.y = Mathf.Clamp(targetFollowOffset.y, MIN_FOLLOW_Y_OFFSET, MAX_FOLLOW_Y_OFFSET);
+            _targetFollowOffset.y = Mathf.Clamp(_targetFollowOffset.y, MIN_FOLLOW_Y_OFFSET, MAX_FOLLOW_Y_OFFSET);
 
             float zoomSpeed = 5f;
-            cinemachineTransposer.m_FollowOffset =
-                Vector3.Lerp(cinemachineTransposer.m_FollowOffset, targetFollowOffset, Time.deltaTime * zoomSpeed);
+            _cinemachineTransposer.m_FollowOffset =
+                Vector3.Lerp(_cinemachineTransposer.m_FollowOffset, _targetFollowOffset, Time.deltaTime * zoomSpeed);
         }
     }
 }

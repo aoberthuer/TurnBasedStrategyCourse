@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 6742497004530937568}
   - component: {fileID: 6742497004530937583}
   - component: {fileID: 2977196979118715612}
+  - component: {fileID: 5063221067701329096}
   m_Layer: 7
   m_Name: Unit
   m_TagString: Untagged
@@ -144,9 +145,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0856822ea57d774a99e0263b718ac9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stoppingDistance: 0.5
-  _moveSpeed: 4
-  _rotateSpeed: 10
 --- !u!136 &2977196979118715612
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -161,6 +159,22 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &5063221067701329096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6742497004530937569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 516b60f6c9424a8f88eb0aefcddd6b72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stoppingDistance: 0.5
+  _moveSpeed: 4
+  _rotateSpeed: 10
+  _maxMoveDistance: 4
 --- !u!1001 &6742497003449247738
 PrefabInstance:
   m_ObjectHideFlags: 0

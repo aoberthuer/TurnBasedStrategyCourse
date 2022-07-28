@@ -1,4 +1,5 @@
 ﻿using System;
+using tbs.grid;
 using UnityEngine;
 
 namespace tbs.units
@@ -33,7 +34,13 @@ namespace tbs.units
                 if (TryHandleUnitSelection())
                     return;
     
-                _selectedUnit.Move(MouseWorld.GetPosition());
+                GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
+
+                if (_selectedUnit.MoveAction.IsValidActionGridPosition(mouseGridPosition))
+                {
+                    _selectedUnit.MoveAction.Move(mouseGridPosition);
+                }
+
             }
         }
     
