@@ -64,6 +64,14 @@ namespace tbs.grid
             return gridObject.HasAnyUnit();
         }
 
+        public int GetWidth()
+        {
+            return _gridSystem.Width;
+        }
 
+        public int GetHeight()
+        {
+            return _gridSystem.Height;
+        }
     }
 }

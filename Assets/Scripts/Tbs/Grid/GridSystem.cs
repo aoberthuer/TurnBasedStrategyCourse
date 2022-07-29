@@ -5,7 +5,11 @@ namespace tbs.grid
     public class GridSystem
     {
         private readonly int _width;
+        public int Width => _width;
+        
         private readonly int _height;
+        public int Height => _height;
+        
         private readonly float _cellSize;
 
         private readonly GridObject[,] _gridObjects;
