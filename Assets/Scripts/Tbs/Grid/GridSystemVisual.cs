@@ -43,6 +43,7 @@ namespace tbs.grid
                     Transform gridSystemVisualSingleTransform =
                         Instantiate(gridSystemVisualSinglePrefab, LevelGrid.Instance.GetWorldPosition(gridPosition),
                             Quaternion.identity);
+                    gridSystemVisualSingleTransform.parent = transform;
 
                     gridSystemVisualSingleArray[x, z] =
                         gridSystemVisualSingleTransform.GetComponent<GridSystemVisualSingle>();

@@ -25,7 +25,7 @@ namespace tbs.grid
             Instance = this;
 
             _gridSystem = new GridSystem(10, 10, 2f);
-            _gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
+            _gridSystem.CreateDebugObjects(this, gridDebugObjectPrefab);
         }
 
         public void AddUnitAtGridPosition(GridPosition gridPosition, Unit unit)

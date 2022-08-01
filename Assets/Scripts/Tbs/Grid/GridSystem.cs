@@ -59,7 +59,7 @@ namespace tbs.grid
 
 
 
-        public void CreateDebugObjects(Transform debugPrefab)
+        public void CreateDebugObjects(LevelGrid levelGrid, Transform debugPrefab)
         {
             for (int x = 0; x < _width; x++)
             {
@@ -70,6 +70,8 @@ namespace tbs.grid
                         GameObject.Instantiate(debugPrefab, GetWorldPosition(gridPosition), Quaternion.identity);
                     GridDebugObject gdo = transform.GetComponent<GridDebugObject>();
                     gdo.SetGridObject(GetGridObject(gridPosition));
+
+                    transform.parent = levelGrid.transform;
                 }
             }
         }
