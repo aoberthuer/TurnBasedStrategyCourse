@@ -33,6 +33,12 @@ namespace tbs.actions
             IsActive = true;
             _totalSpinAmount = 0f;
         }
+        
+        public override string GetActionName()
+        {
+            return "Spin";
+        }
+
 
     }
 }

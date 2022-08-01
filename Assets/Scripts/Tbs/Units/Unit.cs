@@ -13,11 +13,18 @@ namespace tbs.units
         private SpinAction _spinAction;
         public MoveAction MoveAction => _moveAction;
         public SpinAction SpinAction => _spinAction;
+        
+        private BaseAction[] _baseActionArray;
+        public BaseAction[] BaseActionArray => _baseActionArray;
+
 
         private void Awake()
         {
             _moveAction = GetComponent<MoveAction>();
             _spinAction = GetComponent<SpinAction>();
+            
+            _baseActionArray = GetComponents<BaseAction>();
+
         }
 
         private void Start()

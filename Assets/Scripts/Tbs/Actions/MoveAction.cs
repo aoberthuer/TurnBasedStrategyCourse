@@ -103,6 +103,12 @@ namespace tbs.actions
 
             return validGridPositionList;
         }
+        
+        public override string GetActionName()
+        {
+            return "Move";
+        }
+
 
     }
 }

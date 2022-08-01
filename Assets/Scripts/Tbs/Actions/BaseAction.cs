@@ -15,6 +15,9 @@ namespace tbs.actions
         {
             SelectedUnit = GetComponent<Unit>();
         }
+        
+        public abstract string GetActionName();
+
 
     }
 }
