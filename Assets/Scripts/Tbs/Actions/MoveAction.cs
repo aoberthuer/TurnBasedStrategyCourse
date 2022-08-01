@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using tbs.grid;
 using tbs.units;
 using UnityEngine;
@@ -44,14 +45,18 @@ namespace tbs.actions
             else
             {
                 _unitAnimator.SetBool(IsWalking, false);
+                
                 IsActive = false;
+                OnActionComplete();
             }
             
             transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * _rotateSpeed);
         }
         
-        public void Move(GridPosition gridPosition)
+        public void Move(GridPosition gridPosition, Action onActionComplete)
         {
+            OnActionComplete = onActionComplete;
+            
             _targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
             IsActive = true;
         }

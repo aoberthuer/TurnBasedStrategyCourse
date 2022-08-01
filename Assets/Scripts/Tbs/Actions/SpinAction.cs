@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace tbs.actions
 {
@@ -20,11 +21,15 @@ namespace tbs.actions
             if (_totalSpinAmount >= 360f)
             {
                 IsActive = false;
+                OnActionComplete();
+
             }
         }
 
-        public void Spin()
+        public void Spin(Action onActionComplete)
         {
+            OnActionComplete = onActionComplete;
+            
             IsActive = true;
             _totalSpinAmount = 0f;
         }

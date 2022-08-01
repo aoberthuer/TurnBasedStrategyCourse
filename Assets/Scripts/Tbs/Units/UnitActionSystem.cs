@@ -12,6 +12,9 @@ namespace tbs.units
         public Unit SelectedUnit => _selectedUnit;
     
         [SerializeField] private LayerMask _unitLayerMask;
+        
+        private bool _isBusy;
+
     
         public event Action<Unit> OnSelectedUnitChanged;
     
@@ -29,6 +32,11 @@ namespace tbs.units
     
         private void Update()
         {
+            if (_isBusy)
+            {
+                return;
+            }
+            
             if (Input.GetMouseButtonDown(0))
             {
                 if (TryHandleUnitSelection())
@@ -38,16 +46,28 @@ namespace tbs.units
 
                 if (_selectedUnit.MoveAction.IsValidActionGridPosition(mouseGridPosition))
                 {
-                    _selectedUnit.MoveAction.Move(mouseGridPosition);
+                    SetBusy();
+                    _selectedUnit.MoveAction.Move(mouseGridPosition, ClearBusy);
                 }
             }
             
             if (Input.GetMouseButtonDown(1))
             {
-                _selectedUnit.SpinAction.Spin();
+                SetBusy();
+                _selectedUnit.SpinAction.Spin(ClearBusy);
             }
-
         }
+        
+        private void SetBusy()
+        {
+            _isBusy = true;
+        }
+
+        private void ClearBusy()
+        {
+            _isBusy = false;
+        }
+
     
         private bool TryHandleUnitSelection()
         {
