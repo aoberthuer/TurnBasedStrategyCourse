@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using tbs.grid;
+using tbs.units;
 using UnityEngine;
 
-namespace tbs.units
+namespace tbs.actions
 {
-    public class MoveAction : MonoBehaviour
+    public class MoveAction : BaseAction
     {
         [SerializeField] private float _stoppingDistance = 0.5f;
         [SerializeField] private float _moveSpeed = 4f;
@@ -16,39 +16,44 @@ namespace tbs.units
         
         private Vector3 _targetPosition;
 
-        private Unit _unit;
         private Animator _unitAnimator;
         private static readonly int IsWalking = Animator.StringToHash("IsWalking");
         
-        private void Awake()
+        protected override void Awake()
         {
-            _unit = GetComponent<Unit>();
-            _unitAnimator = GetComponentInChildren<Animator>();
+            base.Awake();
 
+            _unitAnimator = GetComponentInChildren<Animator>();
             _targetPosition = transform.position;
         }
 
         private void Update()
         {
+            if (!IsActive)
+            {
+                return;
+            }
+
+            Vector3 moveDirection = (_targetPosition - transform.position).normalized;
             if (Vector3.Distance(_targetPosition, transform.position) > _stoppingDistance)
             {
-                Vector3 moveDirection = (_targetPosition - transform.position).normalized;
+                
                 transform.position += moveDirection * (Time.deltaTime * _moveSpeed);
-
-                // transform.forward = moveDirection; without interpolation
-                transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * _rotateSpeed);
-
                 _unitAnimator.SetBool(IsWalking, true);
             }
             else
             {
                 _unitAnimator.SetBool(IsWalking, false);
+                IsActive = false;
             }
+            
+            transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * _rotateSpeed);
         }
         
         public void Move(GridPosition gridPosition)
         {
             _targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+            IsActive = true;
         }
         
         public bool IsValidActionGridPosition(GridPosition gridPosition)
@@ -61,7 +66,7 @@ namespace tbs.units
         {
             List<GridPosition> validGridPositionList = new List<GridPosition>();
 
-            GridPosition unitGridPosition = _unit.GridPosition;
+            GridPosition unitGridPosition = SelectedUnit.GridPosition;
 
             for (int x = -_maxMoveDistance; x <= _maxMoveDistance; x++)
             {

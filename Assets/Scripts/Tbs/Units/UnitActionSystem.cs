@@ -40,8 +40,13 @@ namespace tbs.units
                 {
                     _selectedUnit.MoveAction.Move(mouseGridPosition);
                 }
-
             }
+            
+            if (Input.GetMouseButtonDown(1))
+            {
+                _selectedUnit.SpinAction.Spin();
+            }
+
         }
     
         private bool TryHandleUnitSelection()

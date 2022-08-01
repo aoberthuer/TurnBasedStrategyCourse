@@ -1,3 +1,4 @@
+using tbs.actions;
 using tbs.grid;
 using UnityEngine;
 
@@ -9,11 +10,14 @@ namespace tbs.units
         public GridPosition GridPosition => _gridPosition;
         
         private MoveAction _moveAction;
+        private SpinAction _spinAction;
         public MoveAction MoveAction => _moveAction;
+        public SpinAction SpinAction => _spinAction;
 
         private void Awake()
         {
             _moveAction = GetComponent<MoveAction>();
+            _spinAction = GetComponent<SpinAction>();
         }
 
         private void Start()
