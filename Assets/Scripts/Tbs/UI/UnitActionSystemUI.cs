@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using tbs.actions;
 using tbs.units;
+using TMPro;
 using UnityEngine;
 
 namespace tbs.ui
@@ -11,13 +12,17 @@ namespace tbs.ui
         [SerializeField] private Transform actionButtonPrefab;
         [SerializeField] private Transform actionButtonContainerTransform;
 
+        [SerializeField] private TextMeshProUGUI actionPointsText;
+
         private List<ActionButtonUI> _actionButtonUiList = new List<ActionButtonUI>();
 
         private void Start()
         {
             UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
             UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
+            UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted;
 
+            UpdateActionPoints();
             CreateUnitActionButtons();
             UpdateSelectedVisual();
         }
@@ -47,11 +52,18 @@ namespace tbs.ui
                 _actionButtonUiList.Add(actionButtonUI);
             }
         }
+        
+        private void UnitActionSystem_OnActionStarted()
+        {
+            UpdateActionPoints();
+        }
+
 
         private void UnitActionSystem_OnSelectedUnitChanged(Unit unit)
         {
             CreateUnitActionButtons();
             UpdateSelectedVisual();
+            UpdateActionPoints();
         }
         
         private void UnitActionSystem_OnSelectedActionChanged(BaseAction baseAction)
@@ -66,6 +78,14 @@ namespace tbs.ui
                 actionButtonUI.UpdateSelectedVisual();
             }
         }
+
+        private void UpdateActionPoints()
+        {
+            Unit selectedUnit = UnitActionSystem.Instance.SelectedUnit;
+
+            actionPointsText.text = "Action Points: " + selectedUnit.GetActionPoints();
+        }
+
 
 
     }

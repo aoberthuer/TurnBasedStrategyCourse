@@ -15,7 +15,7 @@ namespace tbs.actions
             {
                 return;
             }
-        
+
             float spinAddAmount = 360f * Time.deltaTime;
             transform.eulerAngles += new Vector3(0, spinAddAmount, 0);
 
@@ -24,7 +24,6 @@ namespace tbs.actions
             {
                 IsActive = false;
                 OnActionComplete();
-
             }
         }
 
@@ -32,7 +31,7 @@ namespace tbs.actions
         {
             OnActionComplete = onActionComplete;
             IsActive = true;
-            
+
             _totalSpinAmount = 0f;
         }
 
@@ -45,11 +44,16 @@ namespace tbs.actions
                 unitGridPosition
             };
         }
-        
+
+        public override int GetActionPointsCost()
+        {
+            return 2;
+        }
+
+
         public override string GetActionName()
         {
             return "Spin";
         }
-
     }
 }

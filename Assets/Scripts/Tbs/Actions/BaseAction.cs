@@ -9,7 +9,7 @@ namespace tbs.actions
     public abstract class BaseAction : MonoBehaviour
     {
         protected Unit SelectedUnit;
-        
+
         protected bool IsActive;
         protected Action OnActionComplete;
 
@@ -17,7 +17,7 @@ namespace tbs.actions
         {
             SelectedUnit = GetComponent<Unit>();
         }
-        
+
         public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete);
 
         public virtual bool IsValidActionGridPosition(GridPosition gridPosition)
@@ -27,8 +27,12 @@ namespace tbs.actions
         }
 
         public abstract List<GridPosition> GetValidActionGridPositionList();
-        
-        
+
+        public virtual int GetActionPointsCost()
+        {
+            return 1;
+        }
+
         public abstract string GetActionName();
     }
 }

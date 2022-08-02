@@ -9,19 +9,21 @@ namespace tbs.units
     public class UnitActionSystem : MonoBehaviour
     {
         public static UnitActionSystem Instance { get; private set; }
-        
+
         [SerializeField] private Unit _selectedUnit;
         public Unit SelectedUnit => _selectedUnit;
-    
+
         [SerializeField] private LayerMask _unitLayerMask;
-        
+
         private BaseAction _selectedAction;
         private bool _isBusy;
-    
+
         public event Action<Unit> OnSelectedUnitChanged;
         public event Action<BaseAction> OnSelectedActionChanged;
         public event Action<bool> OnBusyChanged;
-    
+
+        public event Action OnActionStarted;
+
         private void Awake()
         {
             if (Instance != null)
@@ -30,14 +32,13 @@ namespace tbs.units
                 Destroy(gameObject);
                 return;
             }
-            
+
             Instance = this;
         }
 
         private void Start()
         {
             SetSelectedUnit(_selectedUnit);
-
         }
 
         private void Update()
@@ -59,7 +60,7 @@ namespace tbs.units
 
             HandleSelectedAction();
         }
-        
+
         private void SetBusy()
         {
             _isBusy = true;
@@ -72,7 +73,7 @@ namespace tbs.units
             OnBusyChanged?.Invoke(_isBusy);
         }
 
-    
+
         private bool TryHandleUnitSelection()
         {
             if (Input.GetMouseButtonDown(0))
@@ -87,32 +88,36 @@ namespace tbs.units
                             // Unit is already selected
                             return false;
                         }
-                    
+
                         SetSelectedUnit(unit);
                         return true;
-
                     }
                 }
             }
-    
+
             return false;
         }
-        
+
         private void HandleSelectedAction()
         {
             if (Input.GetMouseButtonDown(0))
             {
                 GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
 
-                if (_selectedAction.IsValidActionGridPosition(mouseGridPosition))
-                {
-                    SetBusy();
-                    _selectedAction.TakeAction(mouseGridPosition, ClearBusy);
-                }
+                if (!_selectedAction.IsValidActionGridPosition(mouseGridPosition))
+                    return;
+
+                if (!_selectedUnit.TrySpendActionPointsToTakeAction(_selectedAction))
+                    return;
+
+                SetBusy();
+                _selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+                
+                OnActionStarted?.Invoke();
             }
         }
 
-        
+
         private void SetSelectedUnit(Unit unit)
         {
             _selectedUnit = unit;
@@ -121,7 +126,7 @@ namespace tbs.units
 
             OnSelectedUnitChanged?.Invoke(_selectedUnit);
         }
-        
+
         public BaseAction GetSelectedAction()
         {
             return _selectedAction;
@@ -132,6 +137,5 @@ namespace tbs.units
             _selectedAction = baseAction;
             OnSelectedActionChanged?.Invoke(_selectedAction);
         }
-
     }
 }
