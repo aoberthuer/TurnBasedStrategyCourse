@@ -19,6 +19,7 @@ namespace tbs.units
         private bool _isBusy;
     
         public event Action<Unit> OnSelectedUnitChanged;
+        public event Action<BaseAction> OnSelectedActionChanged;
     
         private void Awake()
         {
@@ -126,6 +127,7 @@ namespace tbs.units
         public void SetSelectedAction(BaseAction baseAction)
         {
             _selectedAction = baseAction;
+            OnSelectedActionChanged?.Invoke(_selectedAction);
         }
 
     }

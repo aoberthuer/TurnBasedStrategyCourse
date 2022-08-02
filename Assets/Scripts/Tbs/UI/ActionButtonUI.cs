@@ -10,12 +10,23 @@ namespace tbs.ui
     {
         [SerializeField] private TextMeshProUGUI _textMeshPro;
         [SerializeField] private Button _button;
+        
+        [SerializeField] private Image _selectionImage;
+
+        private BaseAction _baseAction;
 
         public void SetBaseAction(BaseAction baseAction)
         {
-            _textMeshPro.text = baseAction.GetActionName().ToUpper();
+            _baseAction = baseAction;
             
+            _textMeshPro.text = baseAction.GetActionName().ToUpper();
             _button.onClick.AddListener(() => UnitActionSystem.Instance.SetSelectedAction(baseAction) );
+        }
+        
+        public void UpdateSelectedVisual()
+        {
+            BaseAction selectedAction = UnitActionSystem.Instance.GetSelectedAction();
+            _selectionImage.gameObject.SetActive(selectedAction == _baseAction);
         }
         
     }
