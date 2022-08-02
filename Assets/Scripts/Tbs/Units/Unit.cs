@@ -1,11 +1,17 @@
+using System;
 using tbs.actions;
 using tbs.grid;
+using tbs.turns;
 using UnityEngine;
 
 namespace tbs.units
 {
     public class Unit : MonoBehaviour
     {
+        private const int ACTION_POINTS_MAX = 2;
+        public static event Action OnAnyActionPointsChanged;
+
+        
         private GridPosition _gridPosition;
         public GridPosition GridPosition => _gridPosition;
 
@@ -17,7 +23,7 @@ namespace tbs.units
         private BaseAction[] _baseActionArray;
         public BaseAction[] BaseActionArray => _baseActionArray;
 
-        private int _actionPoints = 2;
+        private int _actionPoints = ACTION_POINTS_MAX;
 
 
         private void Awake()
@@ -32,6 +38,8 @@ namespace tbs.units
         {
             _gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
             LevelGrid.Instance.AddUnitAtGridPosition(_gridPosition, this);
+            
+            TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
         }
 
 
@@ -74,11 +82,19 @@ namespace tbs.units
         private void SpendActionPoints(int amount)
         {
             _actionPoints -= amount;
+            OnAnyActionPointsChanged?.Invoke();
         }
 
         public int GetActionPoints()
         {
             return _actionPoints;
         }
+        
+        private void TurnSystem_OnTurnChanged()
+        {
+            _actionPoints = ACTION_POINTS_MAX;
+            OnAnyActionPointsChanged?.Invoke();
+        }
+
     }
 }

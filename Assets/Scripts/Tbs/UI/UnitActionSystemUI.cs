@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using tbs.actions;
+using tbs.turns;
 using tbs.units;
 using TMPro;
 using UnityEngine;
@@ -21,6 +22,10 @@ namespace tbs.ui
             UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
             UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
             UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted;
+            
+            TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
+            Unit.OnAnyActionPointsChanged += Unit_OnAnyActionPointsChanged;
+
 
             UpdateActionPoints();
             CreateUnitActionButtons();
@@ -86,6 +91,15 @@ namespace tbs.ui
             actionPointsText.text = "Action Points: " + selectedUnit.GetActionPoints();
         }
 
+        private void TurnSystem_OnTurnChanged()
+        {
+            UpdateActionPoints();
+        }
+
+        private void Unit_OnAnyActionPointsChanged()
+        {
+            UpdateActionPoints();
+        }
 
 
     }
