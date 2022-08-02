@@ -1,6 +1,8 @@
 ﻿using System;
+using tbs.actions;
 using tbs.grid;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace tbs.units
 {
@@ -13,8 +15,8 @@ namespace tbs.units
     
         [SerializeField] private LayerMask _unitLayerMask;
         
+        private BaseAction _selectedAction;
         private bool _isBusy;
-
     
         public event Action<Unit> OnSelectedUnitChanged;
     
@@ -29,33 +31,31 @@ namespace tbs.units
             
             Instance = this;
         }
-    
+
+        private void Start()
+        {
+            SetSelectedUnit(_selectedUnit);
+
+        }
+
         private void Update()
         {
             if (_isBusy)
             {
                 return;
             }
-            
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (TryHandleUnitSelection())
-                    return;
-    
-                GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
 
-                if (_selectedUnit.MoveAction.IsValidActionGridPosition(mouseGridPosition))
-                {
-                    SetBusy();
-                    _selectedUnit.MoveAction.Move(mouseGridPosition, ClearBusy);
-                }
-            }
-            
-            if (Input.GetMouseButtonDown(1))
+            if (EventSystem.current.IsPointerOverGameObject())
             {
-                SetBusy();
-                _selectedUnit.SpinAction.Spin(ClearBusy);
+                return;
             }
+
+            if (TryHandleUnitSelection())
+            {
+                return;
+            }
+
+            HandleSelectedAction();
         }
         
         private void SetBusy()
@@ -71,20 +71,62 @@ namespace tbs.units
     
         private bool TryHandleUnitSelection()
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, _unitLayerMask))
+            if (Input.GetMouseButtonDown(0))
             {
-                // Unit unit = raycastHit.collider.GetComponent<Unit>();
-                // if (unit != null) would work as well!
-                if (raycastHit.collider.TryGetComponent<Unit>(out Unit unit))
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, _unitLayerMask))
                 {
-                    _selectedUnit = unit;
-                    OnSelectedUnitChanged?.Invoke(_selectedUnit);
-                    return true;
+                    if (raycastHit.collider.TryGetComponent<Unit>(out Unit unit))
+                    {
+                        if (unit == _selectedUnit)
+                        {
+                            // Unit is already selected
+                            return false;
+                        }
+                    
+                        SetSelectedUnit(unit);
+                        return true;
+
+                    }
                 }
             }
     
             return false;
         }
+        
+        private void HandleSelectedAction()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
+
+                if (_selectedAction.IsValidActionGridPosition(mouseGridPosition))
+                {
+                    SetBusy();
+                    _selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+                }
+            }
+        }
+
+        
+        private void SetSelectedUnit(Unit unit)
+        {
+            _selectedUnit = unit;
+
+            SetSelectedAction(unit.MoveAction);
+
+            OnSelectedUnitChanged?.Invoke(_selectedUnit);
+        }
+        
+        public BaseAction GetSelectedAction()
+        {
+            return _selectedAction;
+        }
+
+        public void SetSelectedAction(BaseAction baseAction)
+        {
+            _selectedAction = baseAction;
+        }
+
     }
 }

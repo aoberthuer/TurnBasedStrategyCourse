@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using tbs.grid;
 using tbs.units;
 using UnityEngine;
 
@@ -16,8 +18,17 @@ namespace tbs.actions
             SelectedUnit = GetComponent<Unit>();
         }
         
+        public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete);
+
+        public virtual bool IsValidActionGridPosition(GridPosition gridPosition)
+        {
+            List<GridPosition> validGridPositionList = GetValidActionGridPositionList();
+            return validGridPositionList.Contains(gridPosition);
+        }
+
+        public abstract List<GridPosition> GetValidActionGridPositionList();
+        
+        
         public abstract string GetActionName();
-
-
     }
 }

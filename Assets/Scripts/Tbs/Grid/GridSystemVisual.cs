@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using tbs.actions;
 using tbs.units;
 using UnityEngine;
 
@@ -79,10 +80,9 @@ namespace tbs.grid
         {
             HideAllGridPosition();
 
-            Unit selectedUnit = UnitActionSystem.Instance.SelectedUnit;
+            BaseAction selectedAction = UnitActionSystem.Instance.GetSelectedAction();
 
-            ShowGridPositionList(
-                selectedUnit.MoveAction.GetValidActionGridPositionList());
+            ShowGridPositionList(selectedAction.GetValidActionGridPositionList());
         }
     }
 }

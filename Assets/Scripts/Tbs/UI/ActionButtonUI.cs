@@ -1,4 +1,5 @@
 ﻿using tbs.actions;
+using tbs.units;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +14,9 @@ namespace tbs.ui
         public void SetBaseAction(BaseAction baseAction)
         {
             _textMeshPro.text = baseAction.GetActionName().ToUpper();
+            
+            _button.onClick.AddListener(() => UnitActionSystem.Instance.SetSelectedAction(baseAction) );
         }
-
+        
     }
 }

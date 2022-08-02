@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using tbs.grid;
 using UnityEngine;
 
 namespace tbs.actions
@@ -26,19 +28,28 @@ namespace tbs.actions
             }
         }
 
-        public void Spin(Action onActionComplete)
+        public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
         {
             OnActionComplete = onActionComplete;
-            
             IsActive = true;
+            
             _totalSpinAmount = 0f;
+        }
+
+        public override List<GridPosition> GetValidActionGridPositionList()
+        {
+            GridPosition unitGridPosition = SelectedUnit.GridPosition;
+
+            return new List<GridPosition>
+            {
+                unitGridPosition
+            };
         }
         
         public override string GetActionName()
         {
             return "Spin";
         }
-
 
     }
 }
