@@ -1,6 +1,7 @@
 ﻿using System;
 using tbs.actions;
 using tbs.grid;
+using tbs.turns;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -44,19 +45,16 @@ namespace tbs.units
         private void Update()
         {
             if (_isBusy)
-            {
                 return;
-            }
+
+            if (!TurnSystem.Instance.IsPlayerTurn)
+                return;
 
             if (EventSystem.current.IsPointerOverGameObject())
-            {
                 return;
-            }
 
             if (TryHandleUnitSelection())
-            {
                 return;
-            }
 
             HandleSelectedAction();
         }
@@ -81,11 +79,17 @@ namespace tbs.units
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, _unitLayerMask))
                 {
-                    if (raycastHit.collider.TryGetComponent<Unit>(out Unit unit))
+                    if (raycastHit.collider.TryGetComponent(out Unit unit))
                     {
                         if (unit == _selectedUnit)
                         {
                             // Unit is already selected
+                            return false;
+                        }
+
+                        if (unit.IsEnemy)
+                        {
+                            // Unit is an Enemy
                             return false;
                         }
 
@@ -112,7 +116,7 @@ namespace tbs.units
 
                 SetBusy();
                 _selectedAction.TakeAction(mouseGridPosition, ClearBusy);
-                
+
                 OnActionStarted?.Invoke();
             }
         }

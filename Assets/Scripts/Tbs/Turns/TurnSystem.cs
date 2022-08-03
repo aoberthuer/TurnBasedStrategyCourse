@@ -10,7 +10,10 @@ namespace tbs.turns
         public Action OnTurnChanged;
 
 
-        private int turnNumber = 1;
+        private int _turnNumber = 1;
+        
+        private bool _isPlayerTurn = true;
+        public bool IsPlayerTurn => _isPlayerTurn;
 
 
         private void Awake()
@@ -27,14 +30,15 @@ namespace tbs.turns
 
         public void NextTurn()
         {
-            turnNumber++;
+            _turnNumber++;
+            _isPlayerTurn = !_isPlayerTurn;
 
             OnTurnChanged?.Invoke();
         }
 
         public int GetTurnNumber()
         {
-            return turnNumber;
+            return _turnNumber;
         }
 
     }

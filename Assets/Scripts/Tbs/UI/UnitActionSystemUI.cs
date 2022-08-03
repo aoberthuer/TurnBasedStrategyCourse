@@ -26,7 +26,6 @@ namespace tbs.ui
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
             Unit.OnAnyActionPointsChanged += Unit_OnAnyActionPointsChanged;
 
-
             UpdateActionPoints();
             CreateUnitActionButtons();
             UpdateSelectedVisual();
@@ -100,7 +99,6 @@ namespace tbs.ui
         {
             UpdateActionPoints();
         }
-
 
     }
 }

@@ -11,6 +11,8 @@ namespace tbs.units
         private const int ACTION_POINTS_MAX = 2;
         public static event Action OnAnyActionPointsChanged;
 
+        [SerializeField] private bool isEnemy;
+        public bool IsEnemy => isEnemy;
         
         private GridPosition _gridPosition;
         public GridPosition GridPosition => _gridPosition;
@@ -92,8 +94,12 @@ namespace tbs.units
         
         private void TurnSystem_OnTurnChanged()
         {
-            _actionPoints = ACTION_POINTS_MAX;
-            OnAnyActionPointsChanged?.Invoke();
+            if ((isEnemy && !TurnSystem.Instance.IsPlayerTurn) ||
+                (!isEnemy && TurnSystem.Instance.IsPlayerTurn))
+            {
+                _actionPoints = ACTION_POINTS_MAX;
+                OnAnyActionPointsChanged?.Invoke();
+            }
         }
 
     }
