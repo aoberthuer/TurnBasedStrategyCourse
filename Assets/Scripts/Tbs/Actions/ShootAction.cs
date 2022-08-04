@@ -8,6 +8,8 @@ namespace tbs.actions
 {
     public class ShootAction : BaseAction
     {
+        public event Action OnShoot;
+        
         private enum State
     {
         Aiming,
@@ -78,6 +80,7 @@ namespace tbs.actions
 
     private void Shoot()
     {
+        OnShoot?.Invoke();
         targetUnit.Damage();
     }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using tbs.grid;
-using tbs.units;
 using UnityEngine;
 
 namespace tbs.actions
@@ -14,17 +13,16 @@ namespace tbs.actions
         
         [SerializeField] private int _maxMoveDistance = 4;
 
-        
         private Vector3 _targetPosition;
 
-        private Animator _unitAnimator;
-        private static readonly int IsWalking = Animator.StringToHash("IsWalking");
+        public event Action OnStartMoving;
+        public event Action OnStopMoving;
+
         
         protected override void Awake()
         {
             base.Awake();
 
-            _unitAnimator = GetComponentInChildren<Animator>();
             _targetPosition = transform.position;
         }
 
@@ -40,11 +38,10 @@ namespace tbs.actions
             {
                 
                 transform.position += moveDirection * (Time.deltaTime * _moveSpeed);
-                _unitAnimator.SetBool(IsWalking, true);
             }
             else
             {
-                _unitAnimator.SetBool(IsWalking, false);
+                OnStopMoving?.Invoke();
                 ActionComplete();
             }
             
@@ -56,6 +53,7 @@ namespace tbs.actions
             ActionStart(onActionComplete);
             
             _targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+            OnStartMoving?.Invoke();
         }
 
         public override List<GridPosition> GetValidActionGridPositionList()
