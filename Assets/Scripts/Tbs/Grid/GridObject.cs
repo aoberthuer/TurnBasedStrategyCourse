@@ -7,7 +7,7 @@ namespace tbs.grid
     {
         private GridSystem _gridSystem;
         private readonly GridPosition _gridPosition;
-        
+
         private List<Unit> _unitList;
 
 
@@ -43,11 +43,22 @@ namespace tbs.grid
         {
             return _unitList;
         }
-        
+
         public bool HasAnyUnit()
         {
             return _unitList.Count > 0;
         }
-        
+
+        public Unit GetUnit()
+        {
+            if (HasAnyUnit())
+            {
+                return _unitList[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

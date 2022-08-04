@@ -63,6 +63,13 @@ namespace tbs.grid
             GridObject gridObject = _gridSystem.GetGridObject(gridPosition);
             return gridObject.HasAnyUnit();
         }
+        
+        public Unit GetUnitAtGridPosition(GridPosition gridPosition)
+        {
+            GridObject gridObject = _gridSystem.GetGridObject(gridPosition);
+            return gridObject.GetUnit();
+        }
+
 
         public int GetWidth()
         {

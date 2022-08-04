@@ -11,7 +11,7 @@ namespace tbs.actions
         protected Unit SelectedUnit;
 
         protected bool IsActive;
-        protected Action OnActionComplete;
+        private Action _onActionComplete;
 
         protected virtual void Awake()
         {
@@ -27,6 +27,18 @@ namespace tbs.actions
         }
 
         public abstract List<GridPosition> GetValidActionGridPositionList();
+
+        protected void ActionStart(Action onActionComplete)
+        {
+            IsActive = true;
+            _onActionComplete = onActionComplete;
+        }
+
+        protected void ActionComplete()
+        {
+            IsActive = false;
+            _onActionComplete();
+        }
 
         public virtual int GetActionPointsCost()
         {

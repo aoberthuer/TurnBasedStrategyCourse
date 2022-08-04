@@ -45,9 +45,7 @@ namespace tbs.actions
             else
             {
                 _unitAnimator.SetBool(IsWalking, false);
-                
-                IsActive = false;
-                OnActionComplete();
+                ActionComplete();
             }
             
             transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * _rotateSpeed);
@@ -55,10 +53,9 @@ namespace tbs.actions
         
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
         {
-            OnActionComplete = onActionComplete;
-            _targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+            ActionStart(onActionComplete);
             
-            IsActive = true;
+            _targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
         }
 
         public override List<GridPosition> GetValidActionGridPositionList()

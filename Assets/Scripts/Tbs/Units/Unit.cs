@@ -101,6 +101,16 @@ namespace tbs.units
                 OnAnyActionPointsChanged?.Invoke();
             }
         }
+        
+        public Vector3 GetWorldPosition()
+        {
+            return transform.position;
+        }
+        
+        public void Damage()
+        {
+            Debug.Log(transform + " damaged!");
+        }
 
     }
 }
