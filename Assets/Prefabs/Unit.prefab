@@ -97,6 +97,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _unit: {fileID: 6742497004530937583}
+--- !u!1 &5019132412908327674
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2662256548405789995}
+  m_Layer: 0
+  m_Name: ShootPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2662256548405789995
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5019132412908327674}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0.081, z: 0.731}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6738022247652062358}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6742497004530937569
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,6 +247,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 6685141268058924480}
+  bulletProjectilePrefab: {fileID: 8347482056435275772, guid: df16827077f37b74cb8d33b36207a91a,
+    type: 3}
+  shootPointTransform: {fileID: 2662256548405789995}
 --- !u!1001 &6742497003449247738
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -305,7 +339,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 25af05085d2957e42ac6b80b69ddd26a, type: 2}
     m_RemovedComponents: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 4620998167008108, guid: c25ac4fdc903e7d49a7520930673ecd6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2662256548405789995}
   m_SourcePrefab: {fileID: 100100000, guid: c25ac4fdc903e7d49a7520930673ecd6, type: 3}
 --- !u!4 &6738022247652062358 stripped
 Transform:

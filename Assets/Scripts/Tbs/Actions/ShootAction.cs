@@ -8,7 +8,7 @@ namespace tbs.actions
 {
     public class ShootAction : BaseAction
     {
-        public event Action OnShoot;
+        public event Action<Unit, Unit> OnShoot;
         
         private enum State
     {
@@ -80,7 +80,7 @@ namespace tbs.actions
 
     private void Shoot()
     {
-        OnShoot?.Invoke();
+        OnShoot?.Invoke(SelectedUnit, targetUnit);
         targetUnit.Damage();
     }
 
