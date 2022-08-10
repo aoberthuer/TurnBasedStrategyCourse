@@ -17,6 +17,7 @@ namespace tbs.units
         private GridPosition _gridPosition;
         public GridPosition GridPosition => _gridPosition;
 
+        private HealthSystem _healthSystem;
         private MoveAction _moveAction;
         private SpinAction _spinAction;
         public MoveAction MoveAction => _moveAction;
@@ -30,6 +31,8 @@ namespace tbs.units
 
         private void Awake()
         {
+            _healthSystem = GetComponent<HealthSystem>();
+            
             _moveAction = GetComponent<MoveAction>();
             _spinAction = GetComponent<SpinAction>();
 
@@ -41,9 +44,15 @@ namespace tbs.units
             _gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
             LevelGrid.Instance.AddUnitAtGridPosition(_gridPosition, this);
             
+            _healthSystem.OnDead += HealthSystem_OnDead;
+            
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
         }
 
+        private void OnDisable()
+        {
+            _healthSystem.OnDead -= HealthSystem_OnDead;
+        }
 
         private void Update()
         {
@@ -54,6 +63,12 @@ namespace tbs.units
                 LevelGrid.Instance.UnitMovedGridPosition(this, _gridPosition, newGridPosition);
                 _gridPosition = newGridPosition;
             }
+        }
+        
+        private void HealthSystem_OnDead()
+        {
+            LevelGrid.Instance.RemoveUnitAtGridPosition(_gridPosition, this);
+            Destroy(gameObject);
         }
 
         public bool TrySpendActionPointsToTakeAction(BaseAction baseAction)
@@ -107,9 +122,9 @@ namespace tbs.units
             return transform.position;
         }
         
-        public void Damage()
+        public void Damage(int damageAmount)
         {
-            Debug.Log(transform + " damaged!");
+            _healthSystem.Damage(damageAmount);
         }
 
     }

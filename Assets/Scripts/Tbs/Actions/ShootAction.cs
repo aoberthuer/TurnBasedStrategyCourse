@@ -81,7 +81,7 @@ namespace tbs.actions
     private void Shoot()
     {
         OnShoot?.Invoke(SelectedUnit, targetUnit);
-        targetUnit.Damage();
+        targetUnit.Damage(40);
     }
 
     public override string GetActionName()
