@@ -606,7 +606,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_LocalRotation: {x: 0.3006394, y: 0.000000016410379, z: -0.0000000051729154, w: 0.9537379}
+  m_LocalRotation: {x: 0.3006394, y: -0.000000016410379, z: 0.0000000051729154, w: 0.9537379}
   m_LocalPosition: {x: 6, y: 7, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -886,7 +886,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7782874, y: 1}
+    m_SensorSize: {x: 1.7772658, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -902,7 +902,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 539790948}
-  m_LocalRotation: {x: 0.3006394, y: 0.000000016410379, z: -0.0000000051729154, w: 0.9537379}
+  m_LocalRotation: {x: 0.3006394, y: -0.000000016410379, z: 0.0000000051729154, w: 0.9537379}
   m_LocalPosition: {x: 6, y: 7, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2020,6 +2020,12 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2264006018884639150, guid: a009c9b0838526547838eace5ccaaba8,
+        type: 3}
+      propertyPath: ragdollPrefab
+      value: 
+      objectReference: {fileID: 1414740869207008360, guid: becc5053b72ffa64ca33f2a3f997f74d,
+        type: 3}
     - target: {fileID: 8972593202469818958, guid: a009c9b0838526547838eace5ccaaba8,
         type: 3}
       propertyPath: m_RootOrder
@@ -2605,7 +2611,7 @@ Transform:
   m_Children:
   - {fileID: 1815986307}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &6059092108427955211
 PrefabInstance:
@@ -2754,7 +2760,7 @@ PrefabInstance:
     - target: {fileID: 6742497004530937568, guid: 57e811c6694981e438256c1ff19b2e27,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6742497004530937568, guid: 57e811c6694981e438256c1ff19b2e27,
         type: 3}
