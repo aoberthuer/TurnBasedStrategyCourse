@@ -12,6 +12,10 @@ namespace tbs.actions
 
         protected bool IsActive;
         private Action _onActionComplete;
+        
+        public static event Action<BaseAction> OnAnyActionStarted;
+        public static event Action<BaseAction> OnAnyActionCompleted;
+
 
         protected virtual void Awake()
         {
@@ -32,12 +36,16 @@ namespace tbs.actions
         {
             IsActive = true;
             _onActionComplete = onActionComplete;
+            
+            OnAnyActionStarted?.Invoke(this);
         }
 
         protected void ActionComplete()
         {
             IsActive = false;
             _onActionComplete();
+            
+            OnAnyActionCompleted?.Invoke(this);
         }
 
         public virtual int GetActionPointsCost()

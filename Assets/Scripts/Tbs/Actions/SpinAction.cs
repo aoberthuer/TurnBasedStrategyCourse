@@ -28,9 +28,9 @@ namespace tbs.actions
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
         {
-            ActionStart(onActionComplete);
-
             _totalSpinAmount = 0f;
+            
+            ActionStart(onActionComplete);
         }
 
         public override List<GridPosition> GetValidActionGridPositionList()
