@@ -53,11 +53,11 @@ namespace tbs.grid
             }
             
             UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
+            UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
             LevelGrid.Instance.OnAnyUnitMovedGridPosition += LevelGrid_OnAnyUnitMovedGridPosition;
             
             UpdateGridVisual();
         }
-
 
         public void HideAllGridPosition()
         {
@@ -87,6 +87,10 @@ namespace tbs.grid
             ShowGridPositionList(selectedAction.GetValidActionGridPositionList());
         }
         
+        private void UnitActionSystem_OnSelectedUnitChanged(Unit obj)
+        {
+            UpdateGridVisual();
+        }
         
         private void LevelGrid_OnAnyUnitMovedGridPosition()
         {
