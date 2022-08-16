@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using tbs.units;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace tbs.grid
         [SerializeField] private Transform gridDebugObjectPrefab;
 
         private GridSystem _gridSystem;
+        public event Action OnAnyUnitMovedGridPosition;
 
 
         private void Awake()
@@ -50,6 +52,8 @@ namespace tbs.grid
         {
             RemoveUnitAtGridPosition(fromGridPosition, unit);
             AddUnitAtGridPosition(toGridPosition, unit);
+            
+            OnAnyUnitMovedGridPosition?.Invoke();
         }
 
         public GridPosition GetGridPosition(Vector3 worldPosition) => _gridSystem.GetGridPosition(worldPosition);

@@ -14,14 +14,16 @@ namespace tbs.actions
         {
             Aiming,
             Shooting,
-            Cooloff,
+            CoolOff
         }
-
-        private State state;
-        private int maxShootDistance = 7;
-        private float stateTimer;
-        private Unit targetUnit;
-        private bool canShootBullet;
+        
+        private State _state;
+        private float _stateTimer;
+        
+        private Unit _targetUnit;
+        
+        private readonly int _maxShootDistance  = 7;
+        private bool _canShootBullet;
 
 
         private void Update()
@@ -31,29 +33,29 @@ namespace tbs.actions
                 return;
             }
 
-            stateTimer -= Time.deltaTime;
+            _stateTimer -= Time.deltaTime;
 
-            switch (state)
+            switch (_state)
             {
                 case State.Aiming:
-                    Vector3 aimDir = (targetUnit.GetWorldPosition() - SelectedUnit.GetWorldPosition()).normalized;
+                    Vector3 aimDir = (_targetUnit.GetWorldPosition() - SelectedUnit.GetWorldPosition()).normalized;
 
                     float rotateSpeed = 10f;
                     transform.forward = Vector3.Lerp(transform.forward, aimDir, Time.deltaTime * rotateSpeed);
                     break;
                 case State.Shooting:
-                    if (canShootBullet)
+                    if (_canShootBullet)
                     {
                         Shoot();
-                        canShootBullet = false;
+                        _canShootBullet = false;
                     }
 
                     break;
-                case State.Cooloff:
+                case State.CoolOff:
                     break;
             }
 
-            if (stateTimer <= 0f)
+            if (_stateTimer <= 0f)
             {
                 NextState();
             }
@@ -61,19 +63,19 @@ namespace tbs.actions
 
         private void NextState()
         {
-            switch (state)
+            switch (_state)
             {
                 case State.Aiming:
-                    state = State.Shooting;
+                    _state = State.Shooting;
                     float shootingStateTime = 0.1f;
-                    stateTimer = shootingStateTime;
+                    _stateTimer = shootingStateTime;
                     break;
                 case State.Shooting:
-                    state = State.Cooloff;
+                    _state = State.CoolOff;
                     float coolOffStateTime = 0.5f;
-                    stateTimer = coolOffStateTime;
+                    _stateTimer = coolOffStateTime;
                     break;
-                case State.Cooloff:
+                case State.CoolOff:
                     ActionComplete();
                     break;
             }
@@ -81,8 +83,8 @@ namespace tbs.actions
 
         private void Shoot()
         {
-            OnShoot?.Invoke(SelectedUnit, targetUnit);
-            targetUnit.Damage(40);
+            OnShoot?.Invoke(SelectedUnit, _targetUnit);
+            _targetUnit.Damage(40);
         }
 
         public override string GetActionName()
@@ -96,9 +98,9 @@ namespace tbs.actions
 
             GridPosition unitGridPosition = SelectedUnit.GridPosition;
 
-            for (int x = -maxShootDistance; x <= maxShootDistance; x++)
+            for (int x = -_maxShootDistance; x <= _maxShootDistance; x++)
             {
-                for (int z = -maxShootDistance; z <= maxShootDistance; z++)
+                for (int z = -_maxShootDistance; z <= _maxShootDistance; z++)
                 {
                     GridPosition offsetGridPosition = new GridPosition(x, z);
                     GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
@@ -109,7 +111,7 @@ namespace tbs.actions
                     }
 
                     int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
-                    if (testDistance > maxShootDistance)
+                    if (testDistance > _maxShootDistance)
                     {
                         continue;
                     }
@@ -120,9 +122,8 @@ namespace tbs.actions
                         continue;
                     }
 
-                    Unit targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(testGridPosition);
-
-                    if (targetUnit.IsEnemy == SelectedUnit.IsEnemy)
+                    Unit unitAtGridPosition = LevelGrid.Instance.GetUnitAtGridPosition(testGridPosition);
+                    if (unitAtGridPosition.IsEnemy == SelectedUnit.IsEnemy)
                     {
                         // Both Units on same 'team'
                         continue;
@@ -137,20 +138,25 @@ namespace tbs.actions
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
         {
-            targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
+            _targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
 
-            state = State.Aiming;
+            _state = State.Aiming;
             float aimingStateTime = 1f;
-            stateTimer = aimingStateTime;
+            _stateTimer = aimingStateTime;
 
-            canShootBullet = true;
+            _canShootBullet = true;
 
             ActionStart(onActionComplete);
         }
         
         public Unit GetTargetUnit()
         {
-            return targetUnit;
+            return _targetUnit;
+        }
+        
+        public int GetMaxShootDistance()
+        {
+            return _maxShootDistance;
         }
 
     }

@@ -60,8 +60,10 @@ namespace tbs.units
             if (newGridPosition != _gridPosition)
             {
                 // Unit changed Grid Position
-                LevelGrid.Instance.UnitMovedGridPosition(this, _gridPosition, newGridPosition);
+                GridPosition oldGridPosition = _gridPosition;
                 _gridPosition = newGridPosition;
+
+                LevelGrid.Instance.UnitMovedGridPosition(this, oldGridPosition, newGridPosition);
             }
         }
         

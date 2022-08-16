@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using tbs.actions;
 using tbs.units;
 using UnityEngine;
@@ -50,12 +51,13 @@ namespace tbs.grid
                         gridSystemVisualSingleTransform.GetComponent<GridSystemVisualSingle>();
                 }
             }
-        }
-
-        private void Update()
-        {
+            
+            UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
+            LevelGrid.Instance.OnAnyUnitMovedGridPosition += LevelGrid_OnAnyUnitMovedGridPosition;
+            
             UpdateGridVisual();
         }
+
 
         public void HideAllGridPosition()
         {
@@ -83,6 +85,17 @@ namespace tbs.grid
             BaseAction selectedAction = UnitActionSystem.Instance.GetSelectedAction();
 
             ShowGridPositionList(selectedAction.GetValidActionGridPositionList());
+        }
+        
+        
+        private void LevelGrid_OnAnyUnitMovedGridPosition()
+        {
+            UpdateGridVisual();
+        }
+
+        private void UnitActionSystem_OnSelectedActionChanged(BaseAction obj)
+        {
+            UpdateGridVisual();
         }
     }
 }
