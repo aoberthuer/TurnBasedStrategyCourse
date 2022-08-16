@@ -16,6 +16,24 @@ namespace tbs.grid
 
         private GridSystemVisualSingle[,] gridSystemVisualSingleArray;
 
+        [Serializable]
+        public struct GridVisualTypeMaterial
+        {
+            public GridVisualType gridVisualType;
+            public Material material;
+        }
+
+        public enum GridVisualType
+        {
+            White,
+            Blue,
+            Red,
+            RedSoft,
+            Yellow,
+        }
+
+        [SerializeField]
+        private List<GridVisualTypeMaterial> gridVisualTypeMaterialList = new List<GridVisualTypeMaterial>();
 
         private void Awake()
         {
@@ -51,11 +69,11 @@ namespace tbs.grid
                         gridSystemVisualSingleTransform.GetComponent<GridSystemVisualSingle>();
                 }
             }
-            
+
             UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
             UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
             LevelGrid.Instance.OnAnyUnitMovedGridPosition += LevelGrid_OnAnyUnitMovedGridPosition;
-            
+
             UpdateGridVisual();
         }
 
@@ -69,12 +87,42 @@ namespace tbs.grid
                 }
             }
         }
+        
+        private void ShowGridPositionRange(GridPosition gridPosition, int range, GridVisualType gridVisualType)
+        {
+            List<GridPosition> gridPositionList = new List<GridPosition>();
 
-        public void ShowGridPositionList(List<GridPosition> gridPositionList)
+            for (int x = -range; x <= range; x++)
+            {
+                for (int z = -range; z <= range; z++)
+                {
+                    GridPosition testGridPosition = gridPosition + new GridPosition(x, z);
+
+                    if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                    {
+                        continue;
+                    }
+
+                    int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
+                    if (testDistance > range)
+                    {
+                        continue;
+                    }
+
+                    gridPositionList.Add(testGridPosition);
+                }
+            }
+
+            ShowGridPositionList(gridPositionList, gridVisualType);
+        }
+
+
+        public void ShowGridPositionList(List<GridPosition> gridPositionList, GridVisualType gridVisualType)
         {
             foreach (GridPosition gridPosition in gridPositionList)
             {
-                gridSystemVisualSingleArray[gridPosition.x, gridPosition.z].Show();
+                gridSystemVisualSingleArray[gridPosition.x, gridPosition.z]
+                    .Show(GetGridVisualTypeMaterial(gridVisualType));
             }
         }
 
@@ -82,16 +130,35 @@ namespace tbs.grid
         {
             HideAllGridPosition();
 
+            Unit selectedUnit = UnitActionSystem.Instance.SelectedUnit;
             BaseAction selectedAction = UnitActionSystem.Instance.GetSelectedAction();
+            
+            GridVisualType gridVisualType;
 
-            ShowGridPositionList(selectedAction.GetValidActionGridPositionList());
+            switch (selectedAction)
+            {
+                default:
+                case MoveAction moveAction:
+                    gridVisualType = GridVisualType.White;
+                    break;
+                case SpinAction spinAction:
+                    gridVisualType = GridVisualType.Blue;
+                    break;
+                case ShootAction shootAction:
+                    gridVisualType = GridVisualType.Red;
+
+                    ShowGridPositionRange(selectedUnit.GridPosition, shootAction.GetMaxShootDistance(), GridVisualType.RedSoft);
+                    break;
+            }
+
+            ShowGridPositionList(selectedAction.GetValidActionGridPositionList(), gridVisualType);
         }
-        
+
         private void UnitActionSystem_OnSelectedUnitChanged(Unit obj)
         {
             UpdateGridVisual();
         }
-        
+
         private void LevelGrid_OnAnyUnitMovedGridPosition()
         {
             UpdateGridVisual();
@@ -100,6 +167,20 @@ namespace tbs.grid
         private void UnitActionSystem_OnSelectedActionChanged(BaseAction obj)
         {
             UpdateGridVisual();
+        }
+
+        private Material GetGridVisualTypeMaterial(GridVisualType gridVisualType)
+        {
+            foreach (GridVisualTypeMaterial gridVisualTypeMaterial in gridVisualTypeMaterialList)
+            {
+                if (gridVisualTypeMaterial.gridVisualType == gridVisualType)
+                {
+                    return gridVisualTypeMaterial.material;
+                }
+            }
+
+            Debug.LogError("Could not find GridVisualTypeMaterial for GridVisualType " + gridVisualType);
+            return null;
         }
     }
 }
