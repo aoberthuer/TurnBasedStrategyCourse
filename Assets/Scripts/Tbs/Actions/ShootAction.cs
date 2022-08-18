@@ -12,9 +12,9 @@ namespace tbs.actions
 
         private enum State
         {
-            Aiming,
-            Shooting,
-            CoolOff
+            AIMING,
+            SHOOTING,
+            COOL_OFF
         }
         
         private State _state;
@@ -37,13 +37,13 @@ namespace tbs.actions
 
             switch (_state)
             {
-                case State.Aiming:
+                case State.AIMING:
                     Vector3 aimDir = (_targetUnit.GetWorldPosition() - SelectedUnit.GetWorldPosition()).normalized;
 
                     float rotateSpeed = 10f;
                     transform.forward = Vector3.Lerp(transform.forward, aimDir, Time.deltaTime * rotateSpeed);
                     break;
-                case State.Shooting:
+                case State.SHOOTING:
                     if (_canShootBullet)
                     {
                         Shoot();
@@ -51,7 +51,7 @@ namespace tbs.actions
                     }
 
                     break;
-                case State.CoolOff:
+                case State.COOL_OFF:
                     break;
             }
 
@@ -65,17 +65,17 @@ namespace tbs.actions
         {
             switch (_state)
             {
-                case State.Aiming:
-                    _state = State.Shooting;
+                case State.AIMING:
+                    _state = State.SHOOTING;
                     float shootingStateTime = 0.1f;
                     _stateTimer = shootingStateTime;
                     break;
-                case State.Shooting:
-                    _state = State.CoolOff;
+                case State.SHOOTING:
+                    _state = State.COOL_OFF;
                     float coolOffStateTime = 0.5f;
                     _stateTimer = coolOffStateTime;
                     break;
-                case State.CoolOff:
+                case State.COOL_OFF:
                     ActionComplete();
                     break;
             }
@@ -140,7 +140,7 @@ namespace tbs.actions
         {
             _targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
 
-            _state = State.Aiming;
+            _state = State.AIMING;
             float aimingStateTime = 1f;
             _stateTimer = aimingStateTime;
 

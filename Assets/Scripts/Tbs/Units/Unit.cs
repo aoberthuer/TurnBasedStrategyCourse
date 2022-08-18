@@ -10,6 +10,9 @@ namespace tbs.units
     {
         private const int ACTION_POINTS_MAX = 2;
         public static event Action OnAnyActionPointsChanged;
+        public static event Action<Unit> OnAnyUnitSpawned;
+        public static event Action<Unit> OnAnyUnitDead;
+
 
         [SerializeField] private bool isEnemy;
         public bool IsEnemy => isEnemy;
@@ -47,6 +50,7 @@ namespace tbs.units
             _healthSystem.OnDead += HealthSystem_OnDead;
             
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
+            OnAnyUnitSpawned?.Invoke(this);
         }
 
         private void OnDisable()
@@ -71,6 +75,9 @@ namespace tbs.units
         {
             LevelGrid.Instance.RemoveUnitAtGridPosition(_gridPosition, this);
             Destroy(gameObject);
+            
+            OnAnyUnitDead?.Invoke(this);
+
         }
 
         public bool TrySpendActionPointsToTakeAction(BaseAction baseAction)
