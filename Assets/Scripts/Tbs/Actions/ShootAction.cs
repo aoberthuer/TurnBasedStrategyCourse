@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using tbs.enemyAI;
 using tbs.grid;
 using tbs.units;
 using UnityEngine;
@@ -87,6 +88,22 @@ namespace tbs.actions
             _targetUnit.Damage(40);
         }
 
+        public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
+        {
+            Unit targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
+        
+            return new EnemyAIAction
+            {
+                gridPosition = gridPosition,
+                actionValue = 100 + Mathf.RoundToInt((1 - targetUnit.GetHealthNormalized()) * 100f),
+            };
+        }
+
+        public int GetTargetCountAtPosition(GridPosition gridPosition)
+        {
+            return GetValidActionGridPositionList(gridPosition).Count;
+        }
+
         public override string GetActionName()
         {
             return "Shoot";
@@ -94,9 +111,14 @@ namespace tbs.actions
 
         public override List<GridPosition> GetValidActionGridPositionList()
         {
-            List<GridPosition> validGridPositionList = new List<GridPosition>();
-
             GridPosition unitGridPosition = SelectedUnit.GridPosition;
+            return GetValidActionGridPositionList(unitGridPosition);
+        }
+
+
+        private List<GridPosition> GetValidActionGridPositionList(GridPosition unitGridPosition)
+        {
+            List<GridPosition> validGridPositionList = new List<GridPosition>();
 
             for (int x = -_maxShootDistance; x <= _maxShootDistance; x++)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using tbs.enemyAI;
 using tbs.grid;
 using UnityEngine;
 
@@ -92,7 +93,19 @@ namespace tbs.actions
 
             return validGridPositionList;
         }
-        
+
+        public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
+        {
+            int targetCountAtGridPosition = SelectedUnit.ShootAction.GetTargetCountAtPosition(gridPosition);
+
+            return new EnemyAIAction
+            {
+                gridPosition = gridPosition,
+                actionValue = targetCountAtGridPosition * 10,
+            };
+        }
+
+
         public override string GetActionName()
         {
             return "Move";

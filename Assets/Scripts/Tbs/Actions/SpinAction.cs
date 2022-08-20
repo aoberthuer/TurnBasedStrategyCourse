@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using tbs.enemyAI;
 using tbs.grid;
 using UnityEngine;
 
@@ -29,7 +30,7 @@ namespace tbs.actions
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
         {
             _totalSpinAmount = 0f;
-            
+
             ActionStart(onActionComplete);
         }
 
@@ -48,6 +49,14 @@ namespace tbs.actions
             return 1;
         }
 
+        public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
+        {
+            return new EnemyAIAction
+            {
+                gridPosition = gridPosition,
+                actionValue = 1,
+            };
+        }
 
         public override string GetActionName()
         {

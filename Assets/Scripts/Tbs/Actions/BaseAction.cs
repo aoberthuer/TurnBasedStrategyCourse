@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using tbs.enemyAI;
 using tbs.grid;
 using tbs.units;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace tbs.actions
 
         protected bool IsActive;
         private Action _onActionComplete;
-        
+
         public static event Action<BaseAction> OnAnyActionStarted;
         public static event Action<BaseAction> OnAnyActionCompleted;
 
@@ -36,7 +37,7 @@ namespace tbs.actions
         {
             IsActive = true;
             _onActionComplete = onActionComplete;
-            
+
             OnAnyActionStarted?.Invoke(this);
         }
 
@@ -44,7 +45,7 @@ namespace tbs.actions
         {
             IsActive = false;
             _onActionComplete();
-            
+
             OnAnyActionCompleted?.Invoke(this);
         }
 
@@ -52,6 +53,33 @@ namespace tbs.actions
         {
             return 1;
         }
+
+        public EnemyAIAction GetBestEnemyAIAction()
+        {
+            List<EnemyAIAction> enemyAIActionList = new List<EnemyAIAction>();
+
+            List<GridPosition> validActionGridPositionList = GetValidActionGridPositionList();
+
+            foreach (GridPosition gridPosition in validActionGridPositionList)
+            {
+                EnemyAIAction enemyAIAction = GetEnemyAIAction(gridPosition);
+                enemyAIActionList.Add(enemyAIAction);
+            }
+
+            if (enemyAIActionList.Count > 0)
+            {
+                enemyAIActionList.Sort((EnemyAIAction a, EnemyAIAction b) => b.actionValue - a.actionValue);
+                return enemyAIActionList[0];
+            }
+            else
+            {
+                // No possible Enemy AI Actions
+                return null;
+            }
+        }
+
+        public abstract EnemyAIAction GetEnemyAIAction(GridPosition gridPosition);
+
 
         public abstract string GetActionName();
     }

@@ -23,8 +23,10 @@ namespace tbs.units
         private HealthSystem _healthSystem;
         private MoveAction _moveAction;
         private SpinAction _spinAction;
+        private ShootAction _shootAction;
         public MoveAction MoveAction => _moveAction;
         public SpinAction SpinAction => _spinAction;
+        public ShootAction ShootAction => _shootAction;
 
         private BaseAction[] _baseActionArray;
         public BaseAction[] BaseActionArray => _baseActionArray;
@@ -38,6 +40,7 @@ namespace tbs.units
             
             _moveAction = GetComponent<MoveAction>();
             _spinAction = GetComponent<SpinAction>();
+            _shootAction = GetComponent<ShootAction>(); 
 
             _baseActionArray = GetComponents<BaseAction>();
         }
@@ -134,6 +137,11 @@ namespace tbs.units
         public void Damage(int damageAmount)
         {
             _healthSystem.Damage(damageAmount);
+        }
+
+        public float GetHealthNormalized()
+        {
+            return _healthSystem.GetHealthNormalized();
         }
 
     }
