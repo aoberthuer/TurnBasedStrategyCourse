@@ -16,17 +16,11 @@ namespace tbs.units
 
         [SerializeField] private bool isEnemy;
         public bool IsEnemy => isEnemy;
-        
+
         private GridPosition _gridPosition;
         public GridPosition GridPosition => _gridPosition;
 
         private HealthSystem _healthSystem;
-        private MoveAction _moveAction;
-        private SpinAction _spinAction;
-        private ShootAction _shootAction;
-        public MoveAction MoveAction => _moveAction;
-        public SpinAction SpinAction => _spinAction;
-        public ShootAction ShootAction => _shootAction;
 
         private BaseAction[] _baseActionArray;
         public BaseAction[] BaseActionArray => _baseActionArray;
@@ -37,10 +31,6 @@ namespace tbs.units
         private void Awake()
         {
             _healthSystem = GetComponent<HealthSystem>();
-            
-            _moveAction = GetComponent<MoveAction>();
-            _spinAction = GetComponent<SpinAction>();
-            _shootAction = GetComponent<ShootAction>(); 
 
             _baseActionArray = GetComponents<BaseAction>();
         }
@@ -49,9 +39,9 @@ namespace tbs.units
         {
             _gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
             LevelGrid.Instance.AddUnitAtGridPosition(_gridPosition, this);
-            
+
             _healthSystem.OnDead += HealthSystem_OnDead;
-            
+
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
             OnAnyUnitSpawned?.Invoke(this);
         }
@@ -73,14 +63,26 @@ namespace tbs.units
                 LevelGrid.Instance.UnitMovedGridPosition(this, oldGridPosition, newGridPosition);
             }
         }
-        
+
+        public T GetAction<T>() where T : BaseAction
+        {
+            foreach (BaseAction baseAction in _baseActionArray)
+            {
+                if (baseAction is T)
+                {
+                    return (T)baseAction;
+                }
+            }
+
+            return null;
+        }
+
         private void HealthSystem_OnDead()
         {
             LevelGrid.Instance.RemoveUnitAtGridPosition(_gridPosition, this);
             Destroy(gameObject);
-            
-            OnAnyUnitDead?.Invoke(this);
 
+            OnAnyUnitDead?.Invoke(this);
         }
 
         public bool TrySpendActionPointsToTakeAction(BaseAction baseAction)
@@ -118,7 +120,7 @@ namespace tbs.units
         {
             return _actionPoints;
         }
-        
+
         private void TurnSystem_OnTurnChanged()
         {
             if ((isEnemy && !TurnSystem.Instance.IsPlayerTurn) ||
@@ -128,12 +130,12 @@ namespace tbs.units
                 OnAnyActionPointsChanged?.Invoke();
             }
         }
-        
+
         public Vector3 GetWorldPosition()
         {
             return transform.position;
         }
-        
+
         public void Damage(int damageAmount)
         {
             _healthSystem.Damage(damageAmount);
@@ -143,6 +145,5 @@ namespace tbs.units
         {
             return _healthSystem.GetHealthNormalized();
         }
-
     }
 }

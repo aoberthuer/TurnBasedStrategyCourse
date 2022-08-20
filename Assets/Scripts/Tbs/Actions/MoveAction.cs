@@ -11,7 +11,7 @@ namespace tbs.actions
         [SerializeField] private float _stoppingDistance = 0.5f;
         [SerializeField] private float _moveSpeed = 4f;
         [SerializeField] private float _rotateSpeed = 10f;
-        
+
         [SerializeField] private int _maxMoveDistance = 4;
 
         private Vector3 _targetPosition;
@@ -19,7 +19,7 @@ namespace tbs.actions
         public event Action OnStartMoving;
         public event Action OnStopMoving;
 
-        
+
         protected override void Awake()
         {
             base.Awake();
@@ -37,7 +37,6 @@ namespace tbs.actions
             Vector3 moveDirection = (_targetPosition - transform.position).normalized;
             if (Vector3.Distance(_targetPosition, transform.position) > _stoppingDistance)
             {
-                
                 transform.position += moveDirection * (Time.deltaTime * _moveSpeed);
             }
             else
@@ -45,15 +44,15 @@ namespace tbs.actions
                 OnStopMoving?.Invoke();
                 ActionComplete();
             }
-            
+
             transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * _rotateSpeed);
         }
-        
+
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
         {
             _targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
             OnStartMoving?.Invoke();
-            
+
             ActionStart(onActionComplete);
         }
 
@@ -96,8 +95,9 @@ namespace tbs.actions
 
         public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
         {
-            int targetCountAtGridPosition = SelectedUnit.ShootAction.GetTargetCountAtPosition(gridPosition);
-
+            int targetCountAtGridPosition = SelectedUnit
+                                                .GetAction<ShootAction>()
+                                                .GetTargetCountAtPosition(gridPosition);
             return new EnemyAIAction
             {
                 gridPosition = gridPosition,
@@ -110,6 +110,5 @@ namespace tbs.actions
         {
             return "Move";
         }
-
     }
 }

@@ -126,7 +126,7 @@ namespace tbs.units
         {
             _selectedUnit = unit;
 
-            SetSelectedAction(unit.MoveAction);
+            SetSelectedAction(unit.GetAction<MoveAction>());
 
             OnSelectedUnitChanged?.Invoke(_selectedUnit);
         }
