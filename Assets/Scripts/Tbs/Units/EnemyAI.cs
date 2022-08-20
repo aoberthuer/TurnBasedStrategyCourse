@@ -75,6 +75,10 @@ namespace tbs.units
                 _state = State.TAKING_TURN;
                 _timer = 2f;
             }
+            else
+            {
+                _state = State.WAITING_FOR_ENEMY_TURN;
+            }
         }
 
         private bool TryTakeEnemyAIAction(Action onEnemyAIActionComplete)
