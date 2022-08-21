@@ -30,7 +30,7 @@ namespace tbs.grid
                 (GridSystem<GridObject> gridSystem, GridPosition gridPosition) =>
                     new GridObject(gridSystem, gridPosition));
 
-            _gridSystem.CreateDebugObjects(this, gridDebugObjectPrefab);
+            // _gridSystem.CreateDebugObjects(transform, gridDebugObjectPrefab); // TODO: Disabled, because enabled on Pathfinding
         }
 
         public void AddUnitAtGridPosition(GridPosition gridPosition, Unit unit)
