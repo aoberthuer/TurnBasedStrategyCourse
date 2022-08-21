@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace tbs.grid
 {
-    public class GridSystem
+    public class GridSystem<TGridObject>
     {
         private readonly int _width;
         public int Width => _width;
@@ -12,21 +13,21 @@ namespace tbs.grid
         
         private readonly float _cellSize;
 
-        private readonly GridObject[,] _gridObjects;
+        private readonly TGridObject[,] _gridObjects;
 
-        public GridSystem(int width, int height, float cellSize)
+        public GridSystem(int width, int height, float cellSize, Func<GridSystem<TGridObject>, GridPosition, TGridObject> createGridObject)
         {
             _width = width;
             _height = height;
             _cellSize = cellSize;
 
-            _gridObjects = new GridObject[_width, _height];
+            _gridObjects = new TGridObject[_width, _height];
             for (int x = 0; x < _width; x++)
             {
                 for (int z = 0; z < _height; z++)
                 {
                     GridPosition gridPosition = new GridPosition(x, z);
-                    _gridObjects[x, z] = new GridObject(this, gridPosition);
+                    _gridObjects[x, z] = createGridObject(this, gridPosition);
                 }
             }
         }
@@ -44,7 +45,7 @@ namespace tbs.grid
             );
         }
 
-        public GridObject GetGridObject(GridPosition gridPosition)
+        public TGridObject GetGridObject(GridPosition gridPosition)
         {
             return _gridObjects[gridPosition.x, gridPosition.z];
         }
@@ -68,8 +69,8 @@ namespace tbs.grid
                     GridPosition gridPosition = new GridPosition(x, z);
                     Transform transform =
                         GameObject.Instantiate(debugPrefab, GetWorldPosition(gridPosition), Quaternion.identity);
-                    GridDebugObject gdo = transform.GetComponent<GridDebugObject>();
-                    gdo.SetGridObject(GetGridObject(gridPosition));
+                    GridDebugObject gridDebugObject = transform.GetComponent<GridDebugObject>();
+                    gridDebugObject.SetGridObject(GetGridObject(gridPosition) as GridObject);
 
                     transform.parent = levelGrid.transform;
                 }

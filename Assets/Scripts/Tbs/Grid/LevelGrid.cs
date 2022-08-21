@@ -11,7 +11,7 @@ namespace tbs.grid
 
         [SerializeField] private Transform gridDebugObjectPrefab;
 
-        private GridSystem _gridSystem;
+        private GridSystem<GridObject> _gridSystem;
         public event Action OnAnyUnitMovedGridPosition;
 
 
@@ -26,7 +26,10 @@ namespace tbs.grid
 
             Instance = this;
 
-            _gridSystem = new GridSystem(10, 10, 2f);
+            _gridSystem = new GridSystem<GridObject>(10, 10, 2f,
+                (GridSystem<GridObject> gridSystem, GridPosition gridPosition) =>
+                    new GridObject(gridSystem, gridPosition));
+
             _gridSystem.CreateDebugObjects(this, gridDebugObjectPrefab);
         }
 
@@ -52,12 +55,12 @@ namespace tbs.grid
         {
             RemoveUnitAtGridPosition(fromGridPosition, unit);
             AddUnitAtGridPosition(toGridPosition, unit);
-            
+
             OnAnyUnitMovedGridPosition?.Invoke();
         }
 
         public GridPosition GetGridPosition(Vector3 worldPosition) => _gridSystem.GetGridPosition(worldPosition);
-        
+
         public Vector3 GetWorldPosition(GridPosition gridPosition) => _gridSystem.GetWorldPosition(gridPosition);
 
         public bool IsValidGridPosition(GridPosition gridPosition) => _gridSystem.IsValidGridPosition(gridPosition);
@@ -67,7 +70,7 @@ namespace tbs.grid
             GridObject gridObject = _gridSystem.GetGridObject(gridPosition);
             return gridObject.HasAnyUnit();
         }
-        
+
         public Unit GetUnitAtGridPosition(GridPosition gridPosition)
         {
             GridObject gridObject = _gridSystem.GetGridObject(gridPosition);
