@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace tbs.grid
 {
@@ -10,12 +12,15 @@ namespace tbs.grid
         private const int MOVE_STRAIGHT_COST = 10;
         private const int MOVE_DIAGONAL_COST = 14;
 
-        [SerializeField] private Transform gridDebugObjectPrefab;
-
+        [FormerlySerializedAs("gridDebugObjectPrefab")] [SerializeField] private Transform _gridDebugObjectPrefab;
+        
+        [SerializeField] private LayerMask _obstaclesLayerMask;
+        [SerializeField] private bool _displayDebugRaytraces;
+        
+        private GridSystem<PathNode> _gridSystem;
         private int _width;
         private int _height;
         private float _cellSize;
-        private GridSystem<PathNode> _gridSystem;
 
         private void Awake()
         {
@@ -27,10 +32,50 @@ namespace tbs.grid
             }
             Instance = this;
 
-            _gridSystem = new GridSystem<PathNode>(10, 10, 2f,
-                (GridSystem<PathNode> g, GridPosition gridPosition) => new PathNode(gridPosition));
-            _gridSystem.CreateDebugObjects(transform, gridDebugObjectPrefab);
         }
+
+        public void Setup(int width, int height, float cellSize)
+        {
+            _width = width;
+            _height = height;
+            _cellSize = cellSize;
+
+            _gridSystem = new GridSystem<PathNode>(width, height, cellSize,
+                (GridSystem<PathNode> g, GridPosition gridPosition) => new PathNode(gridPosition));
+            _gridSystem.CreateDebugObjects(transform, _gridDebugObjectPrefab);
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int z = 0; z < height; z++)
+                {
+                    GridPosition gridPosition = new GridPosition(x, z);
+                    Vector3 worldPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+                    float raycastOffsetDistance = 5f;
+
+                    if (_displayDebugRaytraces)
+                    {
+                        Debug.DrawLine(
+                            worldPosition + Vector3.down * raycastOffsetDistance,
+                            worldPosition + Vector3.up * raycastOffsetDistance,
+                            Color.red,
+                            60f
+                        );    
+                    }
+                    
+                    if (Physics.Raycast(
+                            worldPosition + Vector3.down * raycastOffsetDistance,
+                            Vector3.up,
+                            raycastOffsetDistance * 2,
+                            _obstaclesLayerMask))
+                    {
+                        GetNode(x, z).SetIsWalkable(false);
+                    }
+                }
+            }
+        }
+
+        
+        
 
         public List<GridPosition> FindPath(GridPosition startGridPosition, GridPosition endGridPosition)
         {
@@ -69,6 +114,12 @@ namespace tbs.grid
                     // This neighbour has already been searched...
                     if (closedList.Contains(neighbourNode))
                     {
+                        continue;
+                    }
+                    
+                    if (!neighbourNode.IsWalkable())
+                    {
+                        closedList.Add(neighbourNode);
                         continue;
                     }
 
@@ -220,5 +271,6 @@ namespace tbs.grid
 
             return gridPositionList;
         }
+        
     }
 }

@@ -2,14 +2,20 @@
 using System.Collections.Generic;
 using tbs.units;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace tbs.grid
 {
     public class LevelGrid : MonoBehaviour
     {
         public static LevelGrid Instance { get; private set; }
+        
+        [SerializeField] private int _width = 10;
+        [SerializeField] private int _height = 10;
+        [SerializeField] private float _cellSize = 2;
 
-        [SerializeField] private Transform gridDebugObjectPrefab;
+
+        [FormerlySerializedAs("gridDebugObjectPrefab")] [SerializeField] private Transform _gridDebugObjectPrefab;
 
         private GridSystem<GridObject> _gridSystem;
         public event Action OnAnyUnitMovedGridPosition;
@@ -26,12 +32,19 @@ namespace tbs.grid
 
             Instance = this;
 
-            _gridSystem = new GridSystem<GridObject>(10, 10, 2f,
+            _gridSystem = new GridSystem<GridObject>(_width, _height, _cellSize,
                 (GridSystem<GridObject> gridSystem, GridPosition gridPosition) =>
                     new GridObject(gridSystem, gridPosition));
 
             // _gridSystem.CreateDebugObjects(transform, gridDebugObjectPrefab); // TODO: Disabled, because enabled on Pathfinding
         }
+        
+        private void Start()
+        {
+            Pathfinding.Instance.Setup(_width, _height, _cellSize);
+        }
+
+
 
         public void AddUnitAtGridPosition(GridPosition gridPosition, Unit unit)
         {
