@@ -48,6 +48,7 @@ namespace tbs.grid
             {
                 for (int z = 0; z < height; z++)
                 {
+                    
                     GridPosition gridPosition = new GridPosition(x, z);
                     Vector3 worldPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
                     float raycastOffsetDistance = 5f;
@@ -70,6 +71,7 @@ namespace tbs.grid
                     {
                         GetNode(x, z).SetIsWalkable(false);
                     }
+                    
                 }
             }
         }
