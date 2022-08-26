@@ -8,7 +8,7 @@ namespace tbs.actions
 {
     public class MoveAction : BaseAction
     {
-        [SerializeField] private float _stoppingDistance = 0.5f;
+        [SerializeField] private float _stoppingDistance = 0.1f;
         [SerializeField] private float _moveSpeed = 4f;
         [SerializeField] private float _rotateSpeed = 10f;
 
@@ -19,8 +19,8 @@ namespace tbs.actions
         public event Action OnStartMoving;
         public event Action OnStopMoving;
 
-        private List<Vector3> positionList;
-        private int currentPositionIndex;
+        private List<Vector3> _positionList;
+        private int _currentPositionIndex;
 
         private void Update()
         {
@@ -29,25 +29,27 @@ namespace tbs.actions
                 return;
             }
 
-            Vector3 targetPosition = positionList[currentPositionIndex];
+            Vector3 targetPosition = _positionList[_currentPositionIndex];
             Vector3 moveDirection = (targetPosition - transform.position).normalized;
 
             transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * _rotateSpeed);
 
-            if (Vector3.Distance(_targetPosition, transform.position) > _stoppingDistance)
+            if (Vector3.Distance(transform.position, targetPosition) > _stoppingDistance)
             {
-                transform.position += moveDirection * (Time.deltaTime * _moveSpeed);
+                float moveSpeed = 4f;
+                transform.position += moveDirection * (moveSpeed * Time.deltaTime);
             }
             else
             {
-                currentPositionIndex++;
-                if (currentPositionIndex >= positionList.Count)
+                _currentPositionIndex++;
+                if (_currentPositionIndex >= _positionList.Count)
                 {
                     OnStopMoving?.Invoke();
 
                     ActionComplete();
                 }
             }
+
         }
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
@@ -55,13 +57,13 @@ namespace tbs.actions
             List<GridPosition> pathGridPositionList =
                 Pathfinder.Instance.FindPath(SelectedUnit.GridPosition, gridPosition, out int pathLength);
 
-            currentPositionIndex = 0;
-            positionList = new List<Vector3>();
+            _currentPositionIndex = 0;
+            _positionList = new List<Vector3>();
 
             // Transform grid positions into world positions for movement
             foreach (GridPosition pathGridPosition in pathGridPositionList)
             {
-                positionList.Add(LevelGrid.Instance.GetWorldPosition(pathGridPosition));
+                _positionList.Add(LevelGrid.Instance.GetWorldPosition(pathGridPosition));
             }
 
             OnStartMoving?.Invoke();
