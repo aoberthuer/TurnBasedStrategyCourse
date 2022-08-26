@@ -41,7 +41,7 @@ namespace tbs.grid
         
         private void Start()
         {
-            Pathfinding.Instance.Setup(_width, _height, _cellSize);
+            Pathfinder.Instance.Setup(_width, _height, _cellSize);
         }
 
 

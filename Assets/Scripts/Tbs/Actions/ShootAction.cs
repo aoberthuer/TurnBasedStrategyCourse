@@ -10,6 +10,8 @@ namespace tbs.actions
     public class ShootAction : BaseAction
     {
         public event Action<Unit, Unit> OnShoot;
+        
+        [SerializeField] private LayerMask _obstaclesLayerMask;
 
         private enum State
         {
@@ -25,7 +27,6 @@ namespace tbs.actions
         
         private readonly int _maxShootDistance  = 7;
         private bool _canShootBullet;
-
 
         private void Update()
         {
@@ -150,6 +151,21 @@ namespace tbs.actions
                         // Both Units on same 'team'
                         continue;
                     }
+                    
+                    Vector3 unitWorldPosition = LevelGrid.Instance.GetWorldPosition(unitGridPosition);
+                    Vector3 shootDir = (SelectedUnit.GetWorldPosition() - unitWorldPosition).normalized;
+
+                    float unitShoulderHeight = 1.7f;
+                    if (Physics.Raycast(
+                            unitWorldPosition + Vector3.up * unitShoulderHeight,
+                            shootDir,
+                            Vector3.Distance(unitWorldPosition, SelectedUnit.GetWorldPosition()),
+                            _obstaclesLayerMask))
+                    {
+                        // Blocked by an Obstacle
+                        continue;
+                    }
+
 
                     validGridPositionList.Add(testGridPosition);
                 }

@@ -12,20 +12,15 @@ namespace tbs.actions
         [SerializeField] private float _moveSpeed = 4f;
         [SerializeField] private float _rotateSpeed = 10f;
 
-        [SerializeField] private int _maxMoveDistance = 4;
+        [SerializeField] private int _maxMoveDistance = 6;
 
         private Vector3 _targetPosition;
 
         public event Action OnStartMoving;
         public event Action OnStopMoving;
 
-
-        protected override void Awake()
-        {
-            base.Awake();
-
-            _targetPosition = transform.position;
-        }
+        private List<Vector3> positionList;
+        private int currentPositionIndex;
 
         private void Update()
         {
@@ -34,25 +29,42 @@ namespace tbs.actions
                 return;
             }
 
-            Vector3 moveDirection = (_targetPosition - transform.position).normalized;
+            Vector3 targetPosition = positionList[currentPositionIndex];
+            Vector3 moveDirection = (targetPosition - transform.position).normalized;
+
+            transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * _rotateSpeed);
+
             if (Vector3.Distance(_targetPosition, transform.position) > _stoppingDistance)
             {
                 transform.position += moveDirection * (Time.deltaTime * _moveSpeed);
             }
             else
             {
-                OnStopMoving?.Invoke();
-                ActionComplete();
-            }
+                currentPositionIndex++;
+                if (currentPositionIndex >= positionList.Count)
+                {
+                    OnStopMoving?.Invoke();
 
-            transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * _rotateSpeed);
+                    ActionComplete();
+                }
+            }
         }
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
         {
-            _targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
-            OnStartMoving?.Invoke();
+            List<GridPosition> pathGridPositionList =
+                Pathfinder.Instance.FindPath(SelectedUnit.GridPosition, gridPosition, out int pathLength);
 
+            currentPositionIndex = 0;
+            positionList = new List<Vector3>();
+
+            // Transform grid positions into world positions for movement
+            foreach (GridPosition pathGridPosition in pathGridPositionList)
+            {
+                positionList.Add(LevelGrid.Instance.GetWorldPosition(pathGridPosition));
+            }
+
+            OnStartMoving?.Invoke();
             ActionStart(onActionComplete);
         }
 
@@ -86,6 +98,24 @@ namespace tbs.actions
                         continue;
                     }
 
+                    if (!Pathfinder.Instance.IsWalkableGridPosition(testGridPosition))
+                    {
+                        continue;
+                    }
+
+                    if (!Pathfinder.Instance.HasPath(unitGridPosition, testGridPosition))
+                    {
+                        continue;
+                    }
+
+                    int pathfindingDistanceMultiplier = 10;
+                    if (Pathfinder.Instance.GetPathLength(unitGridPosition, testGridPosition) >
+                        _maxMoveDistance * pathfindingDistanceMultiplier)
+                    {
+                        // Path length is too long
+                        continue;
+                    }
+
                     validGridPositionList.Add(testGridPosition);
                 }
             }
@@ -93,11 +123,12 @@ namespace tbs.actions
             return validGridPositionList;
         }
 
+
         public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
         {
             int targetCountAtGridPosition = SelectedUnit
-                                                .GetAction<ShootAction>()
-                                                .GetTargetCountAtPosition(gridPosition);
+                .GetAction<ShootAction>()
+                .GetTargetCountAtPosition(gridPosition);
             return new EnemyAIAction
             {
                 gridPosition = gridPosition,
