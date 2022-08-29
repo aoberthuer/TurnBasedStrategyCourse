@@ -36,8 +36,7 @@ namespace tbs.actions
 
             if (Vector3.Distance(transform.position, targetPosition) > _stoppingDistance)
             {
-                float moveSpeed = 4f;
-                transform.position += moveDirection * (moveSpeed * Time.deltaTime);
+                transform.position += moveDirection * (_moveSpeed * Time.deltaTime);
             }
             else
             {
